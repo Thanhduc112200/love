@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hoa nở chân thực</title>
+<style>
+  body {
+    background: linear-gradient(to bottom, #001028, #0c2b10);
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    align-items: center;
+    overflow: hidden;
+  }
+
+  /* 🌹 Hiệu ứng từng chữ hiện dần */
+  @keyframes fadeChar {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+      filter: brightness(0.8);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+      filter: brightness(1);
+    }
+  }
+
+  /* ✨ Hiệu ứng chữ phát sáng nhẹ sau khi hiện hết */
+  @keyframes glow {
+    0%, 100% {
+      text-shadow: 0 0 10px rgba(255, 255, 200, 0.7),
+                   0 0 20px rgba(255, 180, 120, 0.6),
+                   0 0 30px rgba(255, 120, 80, 0.4);
+      filter: brightness(1);
+    }
+    50% {
+      text-shadow: 0 0 20px rgba(255, 255, 255, 0.9),
+                   0 0 40px rgba(255, 200, 150, 0.8),
+                   0 0 60px rgba(255, 150, 100, 0.5);
+      filter: brightness(1.2);
+    }
+  }
+
+  /* 💫 Hiệu ứng chữ nổi nhẹ */
+  @keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+  }
+
+  .text {
+    position: absolute;
+    bottom: 440px;
+    text-align: center;
+    font-family: 'Brush Script MT', cursive;
+    color: #fff8c9;
+    opacity: 1;
+  }
+
+  .text p {
+    margin: 8px 0;
+    white-space: nowrap;
+  }
+
+  .text p:first-child {
+    font-size: 30px;
+  }
+
+  .text p:last-child {
+    font-size: 38px;
+    color: #ffeb9a;
+  }
+
+  .text span {
+    display: inline-block;
+    margin-right: 2px;
+  }
+
+  .text.glow p {
+    animation: glow 2s ease-in-out infinite, float 4s ease-in-out infinite;
+  }
+
+  .scene {
+    position: relative;
+    width: 180px;
+    height: 360px;
+    animation: appear 1s ease-out;
+  }
+
+  /* Thân hoa */
+  .stem {
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    width: 8px;
+    height: 200px;
+    background: linear-gradient(to bottom, #188a34, #0a501b);
+    border-radius: 10px;
+    transform: translateX(-50%);
+    box-shadow: inset -2px -4px 10px rgba(0,0,0,0.25);
+    z-index: 1;
+  }
+
+  /* Lá */
+  .leaf {
+    position: absolute;
+    width: 70px;
+    height: 45px;
+    background: radial-gradient(ellipse at center, #2db64a, #127d2e 70%);
+    border-radius: 100% 0 100% 0 / 90% 0 100% 0;
+    opacity: 0;
+    transform: scale(0);
+    z-index: 0;
+    animation: leafGrow 2s ease-out forwards;
+  }
+
+  .leaf.left {
+    bottom: 85px;
+    right: 50%;
+    transform-origin: right center;
+    transform: rotate(-35deg) scale(0);
+    animation-delay: 1s;
+  }
+
+  .leaf.right {
+    bottom: 60px;
+    left: 50%;
+    transform-origin: left center;
+    transform: rotate(215deg) scale(0);
+    animation-delay: 1.3s;
+  }
+
+  @keyframes leafGrow {
+    0% { opacity: 0; transform: scale(0); }
+    100% { opacity: 1; transform: scale(1) rotate(var(--angle)); }
+  }
+
+  /* Hoa */
+  .flower {
+    position: absolute;
+    bottom: 180px;
+    left: 50%;
+    width: 130px;
+    height: 130px;
+    transform: translateX(-50%) scale(0.85);
+    z-index: 2;
+  }
+
+  .petal-wrap {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform-origin: center center;
+  }
+
+  .petal {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 45px;
+    height: 95px;
+    background: radial-gradient(ellipse at top, #ffe6ec 0%, #ff4d8a 70%);
+    border-radius: 50% 50% 45% 45%;
+    transform: translate(-50%, -100%) scale(0);
+    transform-origin: 50% 100%;
+    opacity: 0;
+    box-shadow: inset -4px -16px 25px rgba(255,255,255,0.25);
+    animation: petalBloom 2.2s ease-out forwards;
+  }
+
+  @keyframes petalBloom {
+    0% { transform: translate(-50%, -100%) scale(0); opacity: 0; }
+    80% { transform: translate(-50%, -115%) scale(1.05); opacity: 1; }
+    100% { transform: translate(-50%, -115%) scale(1); opacity: 1; }
+  }
+
+  /* Nhụy */
+  .center {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 35px;
+    height: 35px;
+    transform: translate(-50%, -50%) scale(0);
+    background: radial-gradient(circle at 30% 30%, #fff8b0, #ffcc33 70%);
+    border-radius: 50%;
+    box-shadow: 0 0 15px rgba(255,200,60,0.6);
+    z-index: 10;
+    animation: centerAppear 1.5s ease-out 1.3s forwards;
+  }
+
+  @keyframes centerAppear {
+    0% { transform: translate(-50%, -50%) scale(0); opacity: 0; }
+    100% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+  }
+
+  @keyframes appear {
+    from { opacity: 0; transform: translateY(50px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+</style>
+</head>
+<body>
+  <div class="text">
+    <p>🌸 Chúc em bé yêu của anh có ngày 20 tháng 10 thật hạnh phúc 🌸</p>
+    <p>💖 Anh yêu em rất nhiều 💖</p>
+  </div>
+
+  <div class="scene">
+    <div class="stem"></div>
+    <div class="leaf left"></div>
+    <div class="leaf right"></div>
+    <div class="flower">
+      <div class="center"></div>
+    </div>
+  </div>
+
+<script>
+  const flower = document.querySelector('.flower');
+  const petalCount = 10;
+
+  // 🌸 Tạo cánh hoa
+  for (let i = 0; i < petalCount; i++) {
+    const wrap = document.createElement('div');
+    wrap.classList.add('petal-wrap');
+    const angle = (360 / petalCount) * i;
+    wrap.style.transform = `rotate(${angle}deg)`;
+
+    const petal = document.createElement('div');
+    petal.classList.add('petal');
+    petal.style.animationDelay = `${0.4 + i * 0.12}s`;
+    wrap.appendChild(petal);
+    flower.appendChild(wrap);
+  }
+
+  // 💖 Hiệu ứng từng chữ cho từng dòng
+  const text = document.querySelector('.text');
+  const lines = text.querySelectorAll('p');
+
+  let totalDelay = 4;
+
+  lines.forEach((line, index) => {
+    const content = line.textContent.trim();
+    line.textContent = '';
+    const chars = Array.from(content);
+    chars.forEach((char, i) => {
+      const span = document.createElement('span');
+      span.textContent = char === ' ' ? '\u00A0' : char;
+      span.style.opacity = 0;
+      span.style.display = 'inline-block';
+      span.style.animation = `fadeChar 0.5s ease forwards`;
+      span.style.animationDelay = `${totalDelay + i * 0.1}s`;
+      line.appendChild(span);
+    });
+    totalDelay += chars.length * 0.1 + 0.5;
+  });
+
+  // ✨ Khi tất cả đã hiện xong → bật hiệu ứng lấp lánh + nổi
+  setTimeout(() => {
+    text.classList.add('glow');
+  }, totalDelay * 1000);
+</script>
+</body>
+</html>
